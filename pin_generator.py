@@ -1,0 +1,4 @@
+import random
+
+def generate_pin():
+    return f"{random.randint(0, 999999):06d}"

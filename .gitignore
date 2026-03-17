@@ -1,0 +1,93 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+.envrc/
+.venv/
+ENV/
+
+# Conda environments
+*.conda
+*.env
+conda-meta/
+
+# =========================
+# Logs & Runtime
+# =========================
+*.log
+*.pid
+*.seed
+*.out
+*.err
+
+# Project-specific logs
+cypher-share.log
+*.resume.json
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Editor / IDE
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Build / Distribution
+# =========================
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# =========================
+# Cache / Temp
+# =========================
+.cache/
+.tmp/
+temp/
+tmp/
+
+# =========================
+# Binary / Large Files (Optional)
+# =========================
+*.iso
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.mp4
+*.mkv
+*.exe
+
+# =========================
+# User Generated Files
+# =========================
+Desktop/cypher-share/
+~/Desktop/cypher-share/
+
+# =========================
+# Coverage / Testing
+# =========================
+.coverage
+htmlcov/
+.pytest_cache/
+
+# =========================
+# Misc
+# =========================
+*.sqlite3
+*.db
