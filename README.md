@@ -1,7 +1,8 @@
 <div align="center">
   <h1>
 
-    <span style="color: #ff4d4d;">⚡ CYPHER-SHARE ⚡</span>
+  
+# ⚡ **CYPHER-SHARE: P2P FILE TRANSFER LAB** ⚡
   </h1>
   <p><strong>Peer‑to‑peer file transfer over local networks – with a simple 6‑digit PIN handshake and a mad‑scientist CLI.</strong></p>
   <p>
