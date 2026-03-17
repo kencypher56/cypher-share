@@ -277,5 +277,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
     <a href="https://github.com/kencypher56/cypher-share/issues">✨ Request Feature</a>
   </h3>
   <p>Made with ⚡ by <a href="https://github.com/kencypher56">kencypher56</a></p>
-  <img src="https://raw.githubusercontent.com/kencypher56/cypher-share/main/assets/footer.png" alt="Footer" width="600">
+
 </div>
