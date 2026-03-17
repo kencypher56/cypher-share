@@ -1,254 +1,279 @@
-```markdown
-# 🧪 Cypher-Share README.md
-
-**Peer-to-peer file transfer over local networks – with a simple 6-digit PIN handshake and a mad-scientist CLI.**
-
-![Cypher-Share Banner](https://via.placeholder.com/1200x300/1a1a2e/ffffff?text=%F0%9F%A5%AA+Cypher-Share+-+It%27s+ALIVE%21)
-
-Cypher-Share lets you send files and folders between devices on the same WiFi or Ethernet network **without cloud services, USB sticks, or manual IP configuration**. Just pick a 6-digit PIN on the sender, enter it on the receiver, and watch the data flow – accompanied by a dramatic, emoji-filled terminal straight from a Frankenstein laboratory. ⚡🧟‍♂️💀
-
-[![Python](https://img.shields.io/badge/Python-3.11-green.svg)](https://www.python.org/)
-[![Cross Platform](https://img.shields.io/badge/Linux-macOS-Windows-blue.svg)](https://github.com/yourusername/cypher-share)
-[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/cypher-share?style=social)](https://github.com/yourusername/cypher-share)
-
----
-
-## ✨ Features
 <div align="center">
 
-| 🎯 Feature | 🧪 Description |
-|------------|----------------|
-| 🔍 **Zero-conf discovery** | mDNS/Zeroconf automatically finds the sender |
-| 🔐 **PIN-based handshake** | Simple 6-digit code secures the session |
-| 📁 **Files & folders** | Send anything – preserves folder structure |
-| 📊 **Live progress** | Overall + per-file progress bars, speed, ETA |
-| 🔄 **Resume support** | Pick up interrupted transfers automatically |
-| 🧾 **Transfer logging** | Everything saved to `~/cypher-share.log` |
-| 🖥️ **System info** | CPU, RAM, GPU with colored usage bars |
-| 🎨 **Frankenstein UI** | Narrative logs, emojis, lightning effects |
-| 🌍 **Cross-platform** | Linux, macOS, Windows – all supported |
+# 🧪⚡ **CYPHER-SHARE** ⚡🧪
+
+<div style="background: linear-gradient(90deg, #1a1a2e, #16213e, #0f3460); 
+            color: #e94560; padding: 2.5rem; border-radius: 20px; 
+            box-shadow: 0 25px 50px rgba(233,69,96,0.4); 
+            font-family: 'Courier New', monospace; 
+            font-size: 1.6rem; font-weight: bold; 
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.9); 
+            border: 4px solid #e94560; 
+            margin: 1rem 0;">
+
+**🧟‍♂️ IT'S ALIIIIVE! 🧟‍♂️** ⚡🔬💀  
+**PEER-TO-PEER FILE TRANSFER**  
+**6-DIGIT PIN • mDNS • FRANKENSTEIN CLI**
+
+</div>
+
+<div style="background: #0f0f23; color: #00ff88; padding: 1.5rem; 
+            border-radius: 12px; border-left: 6px solid #e94560; 
+            font-size: 1.2rem; font-weight: bold; margin: 1.5rem 0;">
+⚡ **NO CLOUD** • **NO USB** • **NO IP HUNTING** • **PURE LOCAL LIGHTNING** ⚡
+</div>
 
 </div>
 
 ---
 
-## 🧰 Tech Stack
-```mermaid
-graph TD
-    A[🐍 Python 3.11] --> B[🌐 zeroconf mDNS]
-    A --> C[📡 TCP Sockets]
-    A --> D[🎨 rich + questionary]
-    A --> E[💾 JSON Resume]
-    A --> F[📱 psutil System Info]
-    A --> G[🔢 qrcode Optional]
-```
+<div align="center">
 
-| Component | Technology |
-|-----------|------------|
-| **Language** | Python 3.11 |
-| **Discovery** | `zeroconf` (mDNS) |
-| **Network** | TCP sockets (custom protocol) |
-| **CLI & UI** | `rich` + `questionary` + `prompt_toolkit` |
-| **Resume** | JSON files + Python `logging` |
-| **QR Codes** | `qrcode` (optional) |
-| **System Info** | `psutil` |
+## ✨ **FEATURES OF THE CREATURE** ✨
+
+| 🎯 **POWER** | 🧪 **DESCRIPTION** |
+|-------------|-------------------|
+| 🔍 **Zero-conf** | mDNS auto-finds sender ⚡ |
+| 🔐 **PIN Lock** | 6-digit code secures ⚡️ |
+| 📁 **Files+Folders** | Perfect structure preserved 📂 |
+| 📊 **Live Progress** | Bars + speed + ETA everywhere 📈 |
+| 🔄 **Resume** | Interrupts? REVIVES instantly! 🔧 |
+| 🧾 **Logs** | `~/cypher-share.log` eternal record 📜 |
+| 🖥️ **System Scan** | CPU/RAM/GPU with color bars 🖥️ |
+| 🎨 **Mad UI** | Lightning + emojis + NARRATIVE ⚡🧟‍♂️ |
+| 🌍 **Everywhere** | Linux/macOS/Windows 👻 |
+
+</div>
+
+<div align="center">
+<img src="https://via.placeholder.com/1200x6/e94560/1a1a2e?text=" alt="⚡⚡⚡⚡⚡⚡">
+</div>
 
 ---
 
-## 🔬 How The Experiment Works
+<div align="center">
+
+## 🧰 **THE MAD SCIENCE** 🧰
+
+| **⚡ Component** | **🔬 Technology** |
+|------------------|-------------------|
+| **Language** | Python 3.11 🐍 |
+| **Discovery** | `zeroconf` mDNS 🌐 |
+| **Network** | TCP sockets (custom) 📡 |
+| **CLI Magic** | `rich` + `questionary` + `prompt_toolkit` 🎨 |
+| **Resume** | JSON + `logging` 💾 |
+| **QR Bonus** | `qrcode` (optional) 📱 |
+| **System** | `psutil` 🖥️ |
+
+</div>
+
+---
+
+<div align="center">
+
+## 🔬 **THE EXPERIMENT** 🔬
 
 ```mermaid
 sequenceDiagram
-    participant S as 🧟 Sender
-    participant R as 👻 Receiver
-    participant N as 🌐 mDNS Network
+    participant S as 🧟‍♂️ SENDER
+    participant R as 👻 RECEIVER
+    participant N as 🌐 mDNS
     
-    S->>N: Advertise service + PIN
-    R->>N: Scan for PIN match
-    N->>R: Return sender info
-    R->>S: Connect TCP
-    S->>R: Metadata JSON
-    R->>S: Resume info
-    S->>R: Stream files 🧬
-    Note over S,R: Progress bars update live!
+    S->>N: Broadcast PIN⚡
+    Note over S: "lonely-igorr" + "492837"
+    R->>N: Hunt matching PIN🔍
+    N->>R: TARGET ACQUIRED📡
+    R->>S: TCP LIGHTNING⚡
+    S->>R: Metadata JSON📋
+    R->>S: Resume data🔄
+    S->>R: FILE STORM🧬⚡⚡⚡
 ```
 
-### 📡 Protocol Details
-All JSON messages use **length-prefixed** format (4-byte big-endian header):
-
-**Metadata (sender → receiver):**
+### 📡 **PROTOCOL** (Length-prefixed JSON)
 ```json
 {
+  "device": "electric-frankenstein",
+  "pin": "492837",
   "total_files": 42,
   "total_size": 1234567890,
-  "files": [
-    {"rel_path": "docs/report.pdf", "size": 1048576}
-  ],
-  "device": "lonely-igorr",
-  "pin": "782579"
+  "files": [{"rel_path": "docs/secrets.pdf", "size": 1048576}]
 }
 ```
 
-**Resume info (receiver → sender):**
-```json
-{
-  "device": "vengeful-dalek",
-  "docs/report.pdf": {"transferred": 524288}
-}
-```
+</div>
 
 ---
 
-## 🚀 Why Cypher-Share? 
+<div align="center">
 
-| ❌ Traditional Methods | ✅ Cypher-Share |
-|----------------------|----------------|
-| 🌐 Needs internet | 🚫 Local only |
-| 📝 Manual IP config | 🔐 Just 6-digit PIN |
-| 🐌 Cloud middleman | ⚡ Direct TCP |
-| 💥 No resume | 🔄 Auto-resume |
-| 😴 Boring UI | 🎭 Mad scientist vibes |
+## 🚀 **WHY THIS MONSTER RULES** 🚀
 
-**It's alive! ALIVE!** 🧟‍♂️⚡
+| 💀 **DEAD METHODS** | 🧟‍♂️ **CYPHER-SHARE** |
+|---------------------|----------------------|
+| 🌐 Internet required | 🚫 **LOCAL ONLY** |
+| 📝 Manual IP typing | 🔐 **6-DIGIT PIN** |
+| 🐌 Cloud slowness | ⚡ **DIRECT TCP** |
+| 💥 No recovery | 🔄 **AUTO-RESUME** |
+| 😴 Boring interface | 🎭 **FRANKENSTEIN DRAMA** |
+
+<div style="font-size: 2.5rem; color: #e94560; margin: 1rem 0;">
+**🧟‍♂️ IT'S ALIVE! ALIVE! ⚡** 
+</div>
+
+</div>
 
 ---
 
-## 📦 Installation
+<div align="center">
 
-### 🪄 **One-click setup (Recommended)**
+## 📦 **CREATE THE BEAST** 📦
+
+### 🪄 **One-Click Resurrection**
 ```bash
-git clone https://github.com/yourusername/cypher-share.git
+git clone <your-repo-url>
 cd cypher-share
 python setup.py
 ```
-
-**What `setup.py` does:**
+**Auto-magically:**
 - ✅ Detects OS/architecture
-- ✅ Installs Miniconda (if needed)
-- ✅ Creates `cypher-share` environment
-- ✅ Installs all dependencies
-- ✅ Prints activation instructions
+- ✅ Installs Miniconda  
+- ✅ Creates `cypher-share` env
+- ✅ All dependencies
+- ✅ Activation instructions
 
 ```bash
 conda activate cypher-share
 ```
 
-### 🛠️ **Manual setup**
+### 🛠️ **Manual Creation**
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux/macOS
-# venv\Scripts\activate  # Windows
+# venv\Scripts\activate   # Windows  
 pip install -r requirements.txt
 ```
 
----
-
-## 🕹️ Usage
-
-```bash
-python run.py
-```
-
-**Welcome to the laboratory!** 🧪
-
-```
-? What experiment shall we run? 
-  ⚡ Send Experiment
-  ⚡ Receive Experiment
-  📡 System Inspection
-  ⚡ Exit Laboratory
-```
-
-### 📤 **Sending Files**
-1. Choose **Send Experiment** ⬇️
-2. Type file/folder paths (Tab-complete!) 
-3. Get auto-generated device name + **6-digit PIN**
-4. Wait for receiver – **progress bars appear!**
-
-### 📥 **Receiving Files**
-1. Choose **Receive Experiment** ⬇️
-2. Enter sender's **6-digit PIN**
-3. Auto-discovers sender and connects
-4. Files saved to `~/Desktop/cypher-share/`
-
-### 🖥️ **System Inspection**
-View CPU/RAM/GPU with **colorful usage bars**!
-
----
-
-## 📁 Project Structure
-```
-cypher-share/
-├── setup.py              # 🪄 One-click setup
-├── requirements.txt      # 📦 Dependencies
-├── run.py               # 🚀 Main entry
-├── design.py            # 🎨 Frankenstein UI
-├── interactive.py       # 🕹️ Menus & prompts
-├── sysinfo.py           # 🖥️ System monitoring
-├── name_generator.py    # 🧟 Mad scientist names
-├── pin_generator.py     # 🔢 6-digit PINs
-├── operations.py        # 📂 File operations
-├── protocol.py          # 📡 Length-prefixed JSON
-├── send.py              # 📤 Sender logic
-├── receive.py           # 📥 Receiver logic
-├── resume.py            # 🔄 Resume handling
-├── logger.py            # 🧾 Transfer logging
-└── network.py           # 🌐 Network helpers
-```
-
----
-
-## 📝 Logging & Resume
-- **📊 Logs**: `~/cypher-share.log` (timestamps, devices, status)
-- **🔄 Resume**: `~/.cypher-share-resume.json` (byte-perfect recovery)
-
----
-
-## 🧪 Troubleshooting
-
-| ❌ Problem | ✅ Solution |
-|-----------|------------|
-| "No sender found" | Same WiFi? Check mDNS (port 5353 UDP) |
-| Connection reset | Network unstable? Resume will recover |
-| Conda fails | [Manual Miniconda](https://docs.conda.io/en/latest/miniconda.html) |
-| Glitchy UI | Use modern terminal (100+ columns, true color) |
-
----
-
-## 🤝 Contributing
-1. 🍴 Fork the repo
-2. 🔧 Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. ✨ Make changes
-4. 🚀 Commit (`git commit -m 'Add some AmazingFeature'`)
-5. 📡 Push (`git push origin feature/AmazingFeature`)
-6. 🌟 Open Pull Request!
-
-**Keep the Frankenstein spirit alive!** 😈⚡
-
----
-
-## 📄 License
-[MIT License](https://choosealicense.com/licenses/mit/) – Use freely!
+</div>
 
 ---
 
 <div align="center">
 
-![Frankenstein](https://via.placeholder.com/800x200/2d1b69/ffffff?text=%F0%9F%A5%AA+IT%27S+ALIVE%21+ALIVE%21+%F0%9F%94%A7)
+## 🕹️ **ACTIVATE THE CREATURE** 🕹️
 
-**"It's alive! ALIVE!"**  
-— Dr. Frankenstein (probably) 🧟‍♂️⚡🧪
+```bash
+python run.py
+```
+
+```
+⚡🧪  LABORATORY ONLINE  🧪⚡
+
+? What EXPERIMENT today?
+  ⚡ Send Experiment      📤
+  ⚡ Receive Experiment   📥
+  📡 System Inspection   🖥️
+  ⚡ Exit Laboratory      💀
+```
+
+### 📤 **SENDER MODE**
+1. **Send Experiment** → Pick files/folders
+2. **AUTO:** Device name + 6-digit PIN ⚡
+3. **WAIT:** Receiver connects → **LIGHTNING!**
+
+### 📥 **RECEIVER MODE**  
+1. **Receive Experiment** → Enter PIN
+2. **AUTO:** Finds sender → Downloads
+3. **SAVES:** `~/Desktop/cypher-share/`
+
+### 🖥️ **SYSTEM SCAN**
+CPU/RAM/GPU with **electric progress bars** ⚡📊
 
 </div>
 
-![Footer](https://via.placeholder.com/1200x100/0f3460/ffffff?text=Cypher-Share+-+Local+File+Transfer+Reanimated)
+---
+
+<div align="center">
+
+## 🧟‍♂️ **CREATURE ANATOMY** 🧟‍♂️
+
+```
+cypher-share/
+├── setup.py              # 🪄 One-click LIFE
+├── run.py                # ⚡ Main brain
+├── design.py             # 🎨 Frankenstein UI
+├── interactive.py        # 🕹️ Menus/PINs
+├── sysinfo.py            # 🖥️ Vital signs
+├── name_generator.py     # 🧠 "lonely-igorr"
+├── send.py              # 📤 Sender heart
+├── receive.py            # 📥 Receiver hunger
+├── protocol.py           # 📡 Electric signals
+└── resume.py             # 🔄 Immortality
 ```
 
-**💾 To download:**
-1. Copy all the text above (select all)
-2. Paste into a new file 
-3. Save as `README.md`
-4. Ready for your GitHub repo! 🚀
+</div>
 
-**Pro tip:** Replace `yourusername` with your actual GitHub username in the badges and clone URL! 🧪⚡
+---
+
+<div align="center">
+
+## 📜 **ETERNAL RECORDS** 📜
+- **🧾 Logs:** `~/cypher-share.log`
+- **🔄 Resume:** `~/.cypher-share-resume.json`
+
+</div>
+
+---
+
+<div align="center">
+
+## 🧪 **TROUBLESHOOTING** 🧪
+
+| ❌ **GLITCH** | ✅ **FIX** |
+|---------------|------------|
+| "No sender" | Same WiFi? mDNS port 5353? |
+| Connection cut | **Resume revives** automatically |
+| Conda fails | [Manual Miniconda](https://docs.conda.io/en/latest/miniconda.html) |
+| Glitchy UI | Modern terminal (100+ cols) |
+
+</div>
+
+---
+
+<div align="center">
+
+## 🤝 **HELP THE MAD SCIENCE** 🤝
+
+1. 🍴 **Fork repository**
+2. 🔧 **Branch:** `feature/ElectrifyThis`
+3. ✨ **Code madness**
+4. 🚀 **Commit** → **Push** → **PR**
+
+**Keep lightning alive!** ⚡😈🧟‍♂️
+
+</div>
+
+---
+
+<div align="center" style="background: linear-gradient(45deg, #1a1a2e, #16213e); 
+                          padding: 3rem; border-radius: 25px; 
+                          border: 5px solid #e94560; margin: 3rem 0;">
+
+<div style="font-size: 4rem; margin: 1rem 0;">⚡🧪📡🧟‍♂️</div>
+
+# **CYPHER-SHARE**  
+**MIT License** • **Cross-Platform** • **Mad Science 2026**
+
+<div style="font-size: 2.2rem; color: #00ff88; margin: 1.5rem 0;">
+**"IT'S ALIIIIVE! ALIVE!"** ⚡🧟‍♂️
+</div>
+
+**— Dr. Cypherstein** 🧪⚡
+
+</div>
+
+<div align="center">
+<hr style="border: 3px solid #e94560; width: 50%;">
+<div style="font-size: 1.5rem; color: #b8b8ff;">
+**⚡ END TRANSMISSION ⚡**
+</div>
+</div>
