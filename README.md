@@ -1,6 +1,6 @@
 <div align="center">
   <h1>
-    <img src="https://raw.githubusercontent.com/kencypher56/cypher-share/main/assets/logo.png" alt="Cypher-Share Logo" width="80" height="80" style="vertical-align: middle;">
+
     <span style="color: #ff4d4d;">⚡ CYPHER-SHARE ⚡</span>
   </h1>
   <p><strong>Peer‑to‑peer file transfer over local networks – with a simple 6‑digit PIN handshake and a mad‑scientist CLI.</strong></p>
