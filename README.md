@@ -119,25 +119,26 @@ sequenceDiagram
     participant N as 🌐 mDNS Network
     
     Note over S: Generates PIN: 492837
-    S->>N: Advertise _cypher-share._tcp.local.<br/>TXT: pin=492837
-    activaten N
+    S->>N: Advertise service + PIN
+    activate N
     
     Note over R: User enters PIN: 492837
-    R->>N: Query matching services 🔍
-    N->>R: Found: lonely-igorr:492837 📡
+    R->>N: Query matching services
+    N->>R: Found sender info
     deactivate N
     
-    R->>S: TCP Connect (sender port) ⚡
-    S->>R: Length-prefixed Metadata JSON 📋
-    R->>S: Resume info (partial files) 🔄
-    loop Live Progress Update
-        S->>R: File chunks 🧬
+    R->>S: TCP Connect
+    S->>R: Metadata JSON
+    R->>S: Resume info
+    loop Live Progress
+        S->>R: File chunks
     end
-    Note over S,R: Both show progress bars!
+    Note over S,R: Progress bars live!
 ```
 
 **🧪 Key Innovation:** 4-byte length-prefixed JSON prevents truncation!
 
+**Metadata (Sender → Receiver):**
 ```json
 {
   "device": "lonely-igorr",
@@ -151,7 +152,7 @@ sequenceDiagram
 }
 ```
 
-**Resume Reply:**
+**Resume Reply (Receiver → Sender):**
 ```json
 {
   "device": "vengeful-dalek",
