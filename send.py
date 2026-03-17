@@ -1,7 +1,6 @@
 # send.py
 import socket
 import time
-import json
 from zeroconf import Zeroconf, ServiceInfo
 import name_generator
 import pin_generator
@@ -10,8 +9,8 @@ import resume
 import logger
 import network
 import protocol
-from design import (get_live_display, print_narrative, print_error, print_success,
-                    print_warning, print_info, display_transfer_panel, display_connection_panel)
+from datetime import timedelta
+from design import get_live_display, print_narrative, print_error, print_success, print_warning
 
 TCP_PORT = 5556
 SERVICE_TYPE = "_cypher-share._tcp.local."
@@ -22,20 +21,14 @@ def start_sender(file_paths):
         return
 
     live = get_live_display()
-    # Start live display in a separate thread? No, we'll run it in main thread.
-    # We'll start it before entering the transfer loop.
-    import threading
-    live_thread = threading.Thread(target=live.start_live, daemon=True)
-    live_thread.start()
+    live.start()  # <-- FIXED: was start_live_thread
 
     try:
-        # Generate identity
         device_name = name_generator.generate_name()
         pin = pin_generator.generate_pin()
         session_id = f"{int(time.time())}"
         local_ip = network.get_local_ip()
 
-        # Prepare file list and metadata
         file_list, total_size = operations.get_files_and_size(file_paths)
         if not file_list:
             print_error("No valid files selected.", "Check paths and permissions.")
@@ -43,18 +36,18 @@ def start_sender(file_paths):
             return
 
         total_files = len(file_list)
-        manifest = [
-            {"rel_path": rel, "size": size}
-            for rel, _, size in file_list
-        ]
+        manifest = [{"rel_path": rel, "size": size} for rel, _, size in file_list]
         file_map = {rel: full for rel, full, size in file_list}
 
         print_narrative(f"I am [bold bright_cyan]{device_name}[/]. My PIN is [bold yellow]{pin}[/]")
         print_narrative(f"My local IP is {local_ip}", style="dim")
         live.set_doctor_message(f"I am {device_name}. PIN is {pin}. Broadcasting...")
-        display_transfer_panel(device_name, pin, total_files, operations.human_readable_size(total_size), role="Sender")
+        live.update_transfer_stats(device=device_name, pin=pin, local_ip=local_ip,
+                                   files_total=total_files, bytes_total=total_size)
 
-        # Setup Zeroconf
+        logger.log_transfer_event('send_start', device_name, f"Total files: {total_files}, total size: {total_size}")
+
+        # Zeroconf
         try:
             info = ServiceInfo(
                 SERVICE_TYPE,
@@ -92,6 +85,7 @@ def start_sender(file_paths):
             return
 
         print_narrative("Waiting for a receiver to answer the call...", style="bold yellow")
+        live.set_doctor_message("Waiting for receiver...")
         try:
             conn, addr = server.accept()
             print_narrative(f"Receiver connected from {addr}", style="bold blue")
@@ -153,21 +147,10 @@ def start_sender(file_paths):
 
         # Update connection panel
         live.set_connection_panel(device_name, receiver_device, local_ip, addr[0])
+        live.set_doctor_message(f"Connected to {receiver_device}")
+        live.update_transfer_stats(connected=receiver_device, remote_ip=addr[0])
 
-        # Initialize transfer stats
-        live.update_transfer_stats(
-            device=device_name,
-            connected=receiver_device,
-            files_done=0,
-            files_total=total_files,
-            bytes_done=0,
-            bytes_total=total_size,
-            current_file='',
-            current_size=0,
-            current_done=0,
-            speed=0,
-            eta=timedelta(seconds=0)
-        )
+        logger.log_transfer_event('send_connected', device_name, f"Connected to {receiver_device} at {addr[0]}")
 
         bytes_sent_total = 0
         files_done = 0
@@ -178,14 +161,13 @@ def start_sender(file_paths):
             size = file_info["size"]
             full_path = file_map[rel]
 
-            # Determine offset
             offset = 0
             if resume_data and isinstance(resume_data, dict):
                 offset = resume_data.get(rel, {}).get("transferred", 0)
             if offset > 0:
                 print_narrative(f"Resuming {rel} from byte {offset}", style="yellow")
+                logger.log_transfer_event('resume', device_name, f"Resuming {rel} from byte {offset}")
 
-            # Update current file
             live.update_transfer_stats(
                 current_file=rel,
                 current_size=size,
@@ -203,42 +185,45 @@ def start_sender(file_paths):
                         conn.sendall(chunk)
                         sent += len(chunk)
                         bytes_sent_total += len(chunk)
-                        # Update stats
+
                         elapsed = time.time() - start_time
                         speed = bytes_sent_total / elapsed if elapsed > 0 else 0
-                        remaining = total_size - bytes_sent_total
-                        eta_seconds = remaining / speed if speed > 0 else 0
                         live.update_transfer_stats(
                             bytes_done=bytes_sent_total,
                             current_done=sent,
                             speed=speed,
-                            eta=timedelta(seconds=eta_seconds)
+                            eta=timedelta(seconds=(total_size - bytes_sent_total) / speed if speed > 0 else 0)
                         )
             except (BrokenPipeError, ConnectionResetError) as e:
                 print_error(f"Connection lost while sending {rel}.", "The receiver may have disconnected.")
                 resume.update_progress(rel, sent, size)
+                logger.log_transfer_event('send_interrupt', device_name, f"Connection lost while sending {rel}")
                 break
             except Exception as e:
                 print_error(f"File {rel} transmission failed: {e}")
                 resume.update_progress(rel, sent, size)
+                logger.log_transfer_event('send_interrupt', device_name, f"File {rel} failed: {e}")
                 break
 
             # File fully sent
             files_done += 1
             live.update_transfer_stats(
                 files_done=files_done,
-                current_done=size  # mark as done
+                current_done=size
             )
             resume.update_progress(rel, size, size)
+            logger.log_file_transfer(rel, size, 'sent', receiver_device)
 
         elapsed = time.time() - start_time
         avg_speed = bytes_sent_total / elapsed if elapsed > 0 else 0
         if bytes_sent_total == total_size:
             print_success(f"All files sent. Creature delivered in {elapsed:.1f}s ({operations.human_readable_size(avg_speed)}/s).")
-            logger.log_transfer(device_name, receiver_device, [f["rel_path"] for f in manifest], "success")
+            logger.log_transfer_event('send_complete', device_name,
+                                      f"All files sent in {elapsed:.1f}s, avg speed {operations.human_readable_size(avg_speed)}/s")
         else:
             print_warning(f"Transfer incomplete: {operations.human_readable_size(bytes_sent_total)} / {operations.human_readable_size(total_size)} sent.")
-            logger.log_transfer(device_name, receiver_device, [f["rel_path"] for f in manifest], f"interrupted at {bytes_sent_total} bytes")
+            logger.log_transfer_event('send_interrupt', device_name,
+                                      f"Transfer incomplete: {bytes_sent_total}/{total_size} bytes")
 
         conn.close()
         server.close()
@@ -246,6 +231,6 @@ def start_sender(file_paths):
         zeroconf.close()
     except Exception as e:
         print_error(f"Unexpected catastrophe in sender: {e}", "The experiment has failed. Check logs.")
-        logger.log_transfer("unknown", "unknown", file_paths, f"failed: {e}")
+        logger.log_transfer_event('send_error', 'unknown', str(e))
     finally:
         live.stop()

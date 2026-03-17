@@ -49,7 +49,7 @@ def main():
         sys.exit(1)
     except Exception as e:
         print_error(f"An unexpected error occurred: {e}")
-        if False:  # Set to True for debugging
+        if False:
             traceback.print_exc()
         print_narrative("The laboratory is unstable. Please check your setup.", style="bold red")
         sys.exit(1)

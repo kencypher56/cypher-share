@@ -4,13 +4,11 @@ import psutil
 from rich.table import Table
 from rich.panel import Panel
 from rich.console import Console
-from rich.text import Text
 from design import print_narrative, print_error, EMOJI_LIGHTNING
 
 console = Console()
 
 def get_gpu_info():
-    """Enhanced GPU info with fallback."""
     try:
         if platform.system() == "Windows":
             import subprocess
@@ -38,10 +36,8 @@ def get_gpu_info():
         return f"GPU info unavailable ({e})"
 
 def _make_bar(percent, width=20):
-    """Create a colored bar string based on percentage."""
     filled = int(percent * width)
     bar = "█" * filled + "░" * (width - filled)
-    # Color based on usage: green <50%, yellow 50-80%, red >80%
     if percent < 0.5:
         color = "green"
     elif percent < 0.8:
@@ -51,9 +47,7 @@ def _make_bar(percent, width=20):
     return f"[{color}]{bar}[/]"
 
 def display_system_info():
-    """Display system information with emojis and colored bars."""
     try:
-        # Gather data
         os_info = f"{platform.system()} {platform.release()}"
         hostname = platform.node()
         cpu_count = psutil.cpu_count(logical=True)
@@ -64,25 +58,18 @@ def display_system_info():
         mem_percent = mem.percent / 100.0
         gpu = get_gpu_info()
 
-        # Create table
         table = Table(show_header=False, box=None, padding=(0, 2))
         table.add_column("Component", style="cyan", no_wrap=True)
         table.add_column("Details", style="bright_white")
 
-        # OS
         table.add_row("🖥️  OS", os_info)
-        # Hostname
         table.add_row("🏷️  Hostname", hostname)
-        # CPU
         cpu_bar = _make_bar(cpu_percent)
         table.add_row("🧠 CPU", f"{cpu_count} cores  {cpu_bar}  {cpu_percent*100:.1f}%")
-        # RAM
         ram_bar = _make_bar(mem_percent)
         table.add_row("🧮 RAM", f"{mem_used:.1f}GB / {mem_total:.1f}GB  {ram_bar}  {mem_percent*100:.1f}%")
-        # GPU
         table.add_row("🎮 GPU", gpu)
 
-        # Create a panel with lightning border
         panel = Panel(
             table,
             title=f"[bold bright_red]{EMOJI_LIGHTNING} SYSTEM AUTOPSY {EMOJI_LIGHTNING}[/]",
@@ -91,13 +78,11 @@ def display_system_info():
         )
         console.print(panel)
 
-        # Doctor's comment
         if mem_percent > 0.9:
             print_narrative("The creature's memory is nearly full! It hungers for more...", style="bold red")
         elif cpu_percent > 0.9:
             print_narrative("The brain is working overtime! Sparks fly!", style="bold yellow")
         else:
             print_narrative("The machine hums quietly. All systems nominal.", style="bold green")
-
     except Exception as e:
         print_error(f"Cannot inspect system: {e}", "Some components may be hidden.")

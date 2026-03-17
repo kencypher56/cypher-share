@@ -1,3 +1,4 @@
+# name_generator.py
 import random
 
 adjectives = [

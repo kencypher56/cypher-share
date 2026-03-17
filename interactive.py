@@ -1,3 +1,4 @@
+# interactive.py
 import questionary
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import PathCompleter
@@ -5,7 +6,6 @@ from prompt_toolkit.styles import Style
 from design import print_narrative, print_error, EMOJI_LAB, EMOJI_FILE, EMOJI_PIN, EMOJI_INFO, EMOJI_LIGHTNING
 
 def main_menu():
-    """Display an arrow-key navigable menu with emojis."""
     print_narrative(f"{EMOJI_LAB} The laboratory awaits your command...", style="bold cyan")
     try:
         choice = questionary.select(
@@ -28,9 +28,8 @@ def main_menu():
         print_error(f"Menu malfunction: {e}", "Check your terminal or restart the lab.")
         return "exit"
 
-    if choice is None:  # User pressed Ctrl+C
+    if choice is None:
         return "exit"
-    # Map friendly names to internal modes
     mapping = {
         f"{EMOJI_LIGHTNING} Send Experiment": "send",
         f"{EMOJI_LIGHTNING} Receive Experiment": "receive",
@@ -40,14 +39,11 @@ def main_menu():
     return mapping[choice]
 
 def get_file_paths():
-    """Prompt for file/folder paths with tab autocomplete."""
     print_narrative(f"{EMOJI_FILE} Select the specimen to transmit...", style="bold cyan")
-    print_narrative(f"(Type path with <TAB> completion, then press Enter. Leave empty to start experiment.)", style="dim")
+    print_narrative("(Type path with <TAB> completion, then press Enter. Leave empty to start experiment.)", style="dim")
 
     paths = []
-    session = PromptSession(completer=PathCompleter(), style=Style.from_dict({
-        'prompt': 'ansicyan',
-    }))
+    session = PromptSession(completer=PathCompleter(expanduser=True), style=Style.from_dict({'prompt': 'ansicyan'}))
 
     while True:
         try:
@@ -70,7 +66,6 @@ def get_file_paths():
     return paths
 
 def get_pin():
-    """Prompt for the 6-digit PIN."""
     print_narrative(f"{EMOJI_PIN} Enter the secret formula (6-digit PIN):", style="bold cyan")
     try:
         pin = questionary.text("PIN", validate=lambda text: len(text) == 6 and text.isdigit()).ask()

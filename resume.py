@@ -1,3 +1,4 @@
+# resume.py
 import json
 import os
 from pathlib import Path
@@ -29,7 +30,6 @@ def clear_resume_state():
         print_error(f"Failed to clear resume state: {e}")
 
 def update_progress(file_id, transferred_bytes, total_bytes):
-    """file_id can be the relative path or a unique key."""
     try:
         state = load_resume_state()
         state[file_id] = {
